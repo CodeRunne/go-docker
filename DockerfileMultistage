@@ -1,0 +1,26 @@
+FROM golang:1.22-alpine AS build_base
+
+RUN apk add --no-cache git
+
+ADD . /tmp/dummy
+WORKDIR /tmp/dummy
+
+COPY go.mod .
+COPY go.sum .
+
+RUN go mod download
+
+COPY . .
+
+RUN CGO_ENABLED=0 go test -v
+
+RUN go build -o ./out/dback .
+
+FROM alpine:latest
+RUN apk add ca-certificates
+
+COPY --from=build_base /tmp/dummy/out/dback /app/dback
+
+EXPOSE 8008
+
+CMD ["/app/dback"]

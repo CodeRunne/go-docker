@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  server:
+    build: .
+    container_name: "dummy"
+    environment:
+      FRONTEND_URL: "dummy"
+      DB_HOST: "dummy"
+      DB_USER: "dummy"
+      DB_PASS: "dummy"
+      DB_NAME: "dummy"
+      DB_PORT: "dummy"
+      SSL_MODE: "dummy"
+      SECRET_KEY: "dummy"
+    ports:
+      - "8008:8008"
+    depends_on:
+      - gres_db
+    networks:
+      - fullstack
+       
+  gres_db:
+    image: postgres:latest
+    restart: always
+    container_name: "database"
+    # hostname: "postgres"
+    ports:
+      - "dummy"
+    environment:
+      - POSTGRES_DB=dummy
+      - POSTGRES_USER=dummy
+      - POSTGRES_PASSWORD=dummy
+    networks:
+      - fullstack
+    volumes:
+      - database_postgres:/var/lib/postgresql/data
+
+volumes:
+  database_postgres:
+
+networks:
+  fullstack:
+    driver: bridge
